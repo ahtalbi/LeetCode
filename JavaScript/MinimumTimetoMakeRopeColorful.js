@@ -1,19 +1,20 @@
 var minCost = function (colors, nT) {
+    const GetAddedValue = (arrT) => {
+        const total = arrT.reduce((acc, current) => acc + current, 0);
+        const max = Math.max(...arrT);
+        return total - max;
+    };
     let n = colors.length; same = false, li = 0, res = 0;
     for (let i = 1; i < n; i++) {
         if (colors[i - 1] === colors[i]) {
             if (!same) li = i - 1;
             same++;
         } else if (same) {
-            let arrT = nT.slice(li, i).sort((a, b) => a - b);
-            for (let j = 0; j < arrT.length - 1; j++) res += arrT[j];
+            res += GetAddedValue(nT.slice(li, i));
             same = 0;
         }
     }
-    if (same) {
-        let arrT = nT.slice(li, n).sort((a, b) => a - b);
-        for (let j = 0; j < arrT.length - 1; j++) res += arrT[j];
-    }
+    if (same) res += GetAddedValue(nT.slice(li, n));
     return res;
 };
 
