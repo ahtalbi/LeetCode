@@ -4,16 +4,15 @@
  * @return {number[]}
  */
 var findThePrefixCommonArray = function(A, B) {
-    let Prefix = new Map();
-    let c = [];
+    let prefix = [];
     let count = 0;
-    for (let i in A) {
-        let a = A[i], b = B[i];
-        if (Prefix.has(a) || a === b) count++;
-        if (Prefix.has(b)) count++;
-        Prefix.set(a, true);
-        Prefix.set(b, true);
-        c.push(count);
-    }
-    return c;
+    return A.map((c, i) => {
+        if (prefix[c]) count++
+        else prefix[c] = true;
+
+        if (prefix[B[i]]) count++
+        else prefix[B[i]] = true;
+
+        return count;
+    });
 };
