@@ -1,55 +1,64 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 class CheckifThereIsValidParenthesesStringPath {
-    private String res;
+    private List<Integer[]> moveQueue;
+    private List<Integer> firstRoadQueue;
+    private List<Integer> secendRoadQueue;
 
     public CheckifThereIsValidParenthesesStringPath() {
-        res = "";
+        moveQueue = new ArrayList();
+        firstRoadQueue = new ArrayList();
+        secendRoadQueue = new ArrayList();
     }
 
-    private boolean checkTheParanetheses() {
-        int counter = 0;
-        for (char c : res.toCharArray()) {
-            if (c != '(' && c != ')') return false;
-            if (c == '(') counter++;
-            else counter--;
-        }
-        System.out.println(counter);
-        return counter == 0;
-    }
-
-    // this does use the backtraking
-    private boolean hasValidPathRecursion(int i, int j, char[][] grid) {
-        // the quite condition
-        res += grid[i][j];
-        if (j == grid[i].length - 1 && i == grid.length - 1) {
-            // check if the string is good
-            System.out.println(res);
-            if (checkTheParanetheses()) return true;
-        }
-        if (j + 1 < grid[i].length) {
-            // check right
-            if (hasValidPathRecursion(i, j + 1, grid)) return true;
-        }
-        if (i + 1 < grid.length) {
-            // check bottom
-            if (hasValidPathRecursion(i + 1, j, grid)) return true;
-        }
-        res = res.substring(0, res.length() - 1);
-        return false;
-    }
-    
     public boolean hasValidPath(char[][] grid) {
         if (grid.length == 0) return false;
         if (grid[0].length == 0) return false;
-        return hasValidPathRecursion(0, 0, grid);
+        if (grid[0][0] != '(' && grid[0][0] != ')') return false;
+        moveQueue.add(new Integer[]{0, 0});
+        firstRoadQueue.add((grid[0][0] == '(') ? 1 : 0);
+        int i = 0;
+        int j = 0;
+        while (!moveQueue.isEmpty()) {
+            Integer[] deletedMove = moveQueue.remove(0);
+            i = deletedMove[0];
+            j = deletedMove[1];
+            
+            // now we need to add to the move queue
+            if (j + 1 < grid[i].length) {
+                moveQueue.add(new Integer[]{i, j + 1});
+            }
+            // Add bottom if exists
+            if (i + 1 < grid.length) {
+                moveQueue.add(new Integer[]{i + 1, j});
+            }
+
+            for (Integer[] ele : moveQueue) {
+                System.out.println(Arrays.toString(ele));
+            }
+        }
+        return true;
     }
 
     public static void main(String[] args) {
         CheckifThereIsValidParenthesesStringPath instance = new CheckifThereIsValidParenthesesStringPath();
         char[][] matrix = {
-            {'(','(','('},
-            {')','(',')'},
-            {'(','(','('},
-            {'(','(','('}
+            {'(','(',')',')',')','(','(',')','(','(',')','(',')','(','(',')'},
+            {')','(',')',')',')',')','(','(','(','(',')',')','(','(','(','('},
+            {'(',')',')',')','(','(','(',')','(','(',')',')',')','(',')',')'},
+            {'(','(',')',')',')',')','(','(','(',')','(','(','(',')','(','('},
+            {'(','(','(','(','(','(',')',')',')','(','(',')',')','(',')',')'},
+            {'(','(',')','(',')','(','(','(','(',')',')',')','(','(',')',')'},
+            {')','(','(','(',')','(',')',')',')',')','(','(',')',')',')','('},
+            {'(','(','(',')','(','(',')',')',')','(','(',')','(',')',')','('},
+            {')',')','(',')',')',')','(','(','(',')','(','(',')','(',')',')'},
+            {'(','(',')',')',')','(',')',')',')',')','(',')','(','(','(',')'},
+            {'(','(','(',')','(',')',')','(','(',')',')',')','(',')','(',')'},
+            {'(',')',')',')',')',')',')','(',')',')',')',')','(',')',')',')'},
+            {')','(',')',')','(','(','(','(','(',')','(',')','(',')','(',')'},
+            {')',')',')',')','(',')',')','(',')',')',')',')','(','(',')',')'}
         };
         System.out.println(instance.hasValidPath(matrix));
     }
